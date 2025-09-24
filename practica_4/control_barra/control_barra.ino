@@ -12,9 +12,10 @@
 #define M_SERVO 10.111111111111
 #define B_SERVO 1470
 #define PI 3.14159265359
+//segundo controlador, con bilinear//primer controlador, con backward//primer controlador, con bilinear
 
-#define KA 2.7102//2.8728
-#define ZERO 0.88//0.8868
+#define KA 1.2842//2.7102//2.8728
+#define ZERO 0.8553//0.88//0.8868
 #define POLO 1
 
 

@@ -30,7 +30,10 @@ close all;
 
 T_s = 0.020; 
 
-C = db2mag(8.66)*zpk([-6],[0],1);
+C = db2mag(1.52)*zpk([-7.8],[0],1);
+
+%controlador anterior, con overshoot
+%C = db2mag(8.66)*zpk([-6],[0],1);
 
 L = minreal(P*C);
 
