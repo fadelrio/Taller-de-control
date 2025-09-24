@@ -6,22 +6,33 @@
 #define SERVO_PIN 6
 #define PERIODO_MS 20
 #define MAX_DELAY_US 16383
-#define CALIBRATION_STEPS_GYRO 500
-#define CALIBRATION_STEPS_TITA 800
+#define CALIBRATION_STEPS_GYRO 100
+#define CALIBRATION_STEPS_TITA 100
 #define ALFA .8
 #define M_SERVO 10.111111111111
 #define B_SERVO 1470
+#define PI 3.14159265359
+
+#define KA 2.7102//2.8728
+#define ZERO 0.88//0.8868
+#define POLO 1
 
 
 float titag = 0;
 float titaa = 0;
 float titaf = 0;
-float tita =0;
+float tita = 0;
 
 float ang_servo = 0;
 
-int grados[] = {40,-40,30,-30,20,-20,10,-10,0};
-int i = 0;
+float ang_servo_ant = ang_servo;
+
+float referencia = 0*PI/180;
+
+float error = 0;
+
+float error_ant = error;
+
 
 int iteraciones_2seg = 0;
 
@@ -132,18 +143,20 @@ void loop() {
 
   //END CALI TITA
 
-  //BEGIN SERVO STEPS
+  //BEGIN CONTROL
+  error = referencia - tita;
   
-  if(iteraciones_2seg == 100){
-    ang_servo = grados[i];
-    writeAnguloServo(servo, ang_servo);
-    if(i < 8)
-      i++;
-  }
+  ang_servo = KA*error - KA*ZERO*error_ant + ang_servo_ant;
 
-  mandar_al_simulink((tita*180/3.1416), ang_servo);
+  error_ant = error;
+
+  ang_servo_ant = ang_servo;
+
+  writeAnguloServo(servo, ang_servo*180/PI);
+
+  mandar_al_simulink((tita*180/PI), ang_servo);
   
-  //END SERVO STEPS
+  //END CONTROL
 
   //BEGIN ITER
 

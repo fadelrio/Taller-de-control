@@ -17,8 +17,13 @@ p_cont2 = 50*log(p2)
 
 P = zpk([],[p1 p2],A(3),1/50);
 %%
-P_cont = zpk([],[p_cont1 p_cont2],.393);
+P_cont = zpk([],[p_cont1 p_cont2],28);
 
-step(P_cont);
+t = 1/50*(0:1274-1);
+figure;
+plot(t, out.Y);
+hold on;
+lsim(P_cont,out.U,t);
+
 
 
