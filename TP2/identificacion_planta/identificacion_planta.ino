@@ -14,7 +14,7 @@
 #define CALIBRATION_STEPS_TITA 100
 #define ALFA .8
 #define M_SERVO 10.111111111111
-#define B_SERVO 1470
+#define B_SERVO 1435
 #define PI 3.14159265359
 #define OFFSET_CARRITO 14.5
 //segundo controlador, con bilinear//primer controlador, con backward//primer controlador, con bilinear
@@ -31,7 +31,9 @@ float ang_servo = 0;
 
 float ang_servo_ant = ang_servo;
 
-float referencia = 5;
+bool primera = true;
+
+float referencia = 0;
 
 float error = 0;
 
@@ -156,7 +158,7 @@ void loop() {
   //BEGIN CONTROL
   error = referencia - distancia;
   
-  ang_servo = -KP*error;
+  ang_servo = referencia;
 
   writeAnguloServo(servo, ang_servo);
 
@@ -166,11 +168,15 @@ void loop() {
 
   //BEGIN ITER
 
-  if(iteraciones_5seg < 250){
+  if(iteraciones_5seg < 500){
     iteraciones_5seg++;
-  }else{
+  }else if(primera == false){
     iteraciones_5seg = 0;
     referencia = referencia*-1;
+  }else{
+    referencia = -7;
+    primera = false;
+    iteraciones_5seg = 0;
   }
 
   //END ITER
