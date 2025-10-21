@@ -31,7 +31,7 @@ legend
 figure;
 step(P);
 %% 
-
+close all
 T_s = 1/50;
 
 Y_25 = (Y_25_1 + Y_25_2 + Y_25_3 + Y_25_4 + Y_25_5)/5;
@@ -39,8 +39,8 @@ Tita_25 = (Tita_25_1 + Tita_25_2 + Tita_25_3 + Tita_25_4 + Tita_25_5)/5;
 
 Y_m25 = (Y_m25_1 + Y_m25_2 + Y_m25_3 + Y_m25_4 + Y_m25_5)/5;
 Tita_m25 = (Tita_m25_1 + Tita_m25_2 + Tita_m25_3 + Tita_m25_4 + Tita_m25_5)/5;
-%%
-close all
+
+
 p_25 = 0.91;
 k_25 = -0.01;
 
@@ -57,13 +57,10 @@ legend
 
 p_cont_25 = 1/T_s*log(p_25)
 
-%ganancia_25 = -k_25*(1+p_cont_25)/((exp(T_s)-1)*(exp(T_s)-p_25));
-%esta cuenta no funciono asi que lo hice por backward difference y con eso
-%me dio 
+ganancia_25 = -k_25*(1+p_cont_25)/((exp(T_s)-1)*(exp(T_s)-p_25));
+%esta cuenta no fun
 
-k_c25 = k_25/T_s^2;
-
-P_25 = zpk([],[0,p_cont_25], k_c25);
+P_25 = zpk([],[0,p_cont_25], -25);
 
 
 t = 1/50*(1:59-1);
@@ -74,16 +71,3 @@ Y_1 = lsim(P_25,Tita_25(1:(59-1)),t);
 plot(t,Y_1)
 legend
 
-
-t = 1/50*(1:59-1);
-figure;
-plot(t, Y_m25(1:(59-1)));
-hold on;
-Y_1 = lsim(P_25,Tita_m25(1:(59-1)),t);
-plot(t,Y_1)
-legend
-
-%bueno somos re capos y funciona con los dos angulos. La tienen adentro
-%juani y fbern
-
-P = P_25;
