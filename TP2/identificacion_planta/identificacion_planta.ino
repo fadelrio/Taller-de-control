@@ -19,8 +19,6 @@
 #define OFFSET_CARRITO 14.5
 //segundo controlador, con bilinear//primer controlador, con backward//primer controlador, con bilinear
 
-#define KP 1.7
-
 
 float titag = 0;
 float titaa = 0;
@@ -29,16 +27,12 @@ float tita = 0;
 
 float ang_servo = 0;
 
-float ang_servo_ant = ang_servo;
 
-bool primera = true;
-
-float referencia = 0;
-
-float error = 0;
+int grados[] = {-25};
+int i = 0;
 
 
-int iteraciones_5seg = 0;
+int iteraciones_2seg = 0;
 
 int calibration_steps_gyro = CALIBRATION_STEPS_GYRO;
 int calibration_steps_tita = CALIBRATION_STEPS_TITA;
@@ -156,29 +150,24 @@ void loop() {
   //END DATA SONAR
 
   //BEGIN CONTROL
-  error = referencia - distancia;
-  
-  ang_servo = referencia;
+  if(iteraciones_2seg == 50){
+    ang_servo = grados[i];
+    writeAnguloServo(servo, ang_servo);
+    if(i < 0)
+      i++;
+  }
 
-  writeAnguloServo(servo, ang_servo);
-
-  mandar_al_simulink((tita*180/PI), ang_servo, distancia, referencia);
+  mandar_al_simulink((tita*180/PI), ang_servo, distancia);
   
   //END CONTROL
 
   //BEGIN ITER
 
-  if(iteraciones_5seg < 500){
-    iteraciones_5seg++;
-  }else if(primera == false){
-    iteraciones_5seg = 0;
-    referencia = referencia*-1;
+  if(iteraciones_2seg < 50){
+    iteraciones_2seg++;
   }else{
-    referencia = -7;
-    primera = false;
-    iteraciones_5seg = 0;
+    iteraciones_2seg = 0;
   }
-
   //END ITER
   
   //BEGIN FREQ BLOCK 2
@@ -197,15 +186,13 @@ void loop() {
   //END FREQ BLOCK 2
 }
 
-void mandar_al_simulink(float titam, float ang_servo, float distancia, float referencia){
+void mandar_al_simulink(float titam, float ang_servo, float distancia){
   Serial.write("coma");
   byte *b = (byte *) &titam;
   Serial.write(b,4);
   b = (byte *) &ang_servo;
   Serial.write(b,4);
   b = (byte *) &distancia;
-  Serial.write(b,4);
-  b = (byte *) &referencia;
   Serial.write(b,4);
 }
 

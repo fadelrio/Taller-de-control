@@ -6,11 +6,11 @@
 #define SERVO_PIN 6
 #define PERIODO_MS 20
 #define MAX_DELAY_US 16383
-#define CALIBRATION_STEPS_GYRO 500
-#define CALIBRATION_STEPS_TITA 800
+#define CALIBRATION_STEPS_GYRO 100
+#define CALIBRATION_STEPS_TITA 100
 #define ALFA .8
-#define M_SERVO 10.111111111111
-#define B_SERVO 1470
+#define M_SERVO 11
+#define B_SERVO 1435
 
 
 float titag = 0;
@@ -20,7 +20,7 @@ float tita =0;
 
 float ang_servo = 0;
 
-int grados[] = {40,-40,30,-30,20,-20,10,-10,0};
+int grados[] = {40,-40,35,-35,30,-30,25,-25,20,-20,15,-15,10,-10,5,-5,0};
 int i = 0;
 
 int iteraciones_2seg = 0;
@@ -137,7 +137,7 @@ void loop() {
   if(iteraciones_2seg == 100){
     ang_servo = grados[i];
     writeAnguloServo(servo, ang_servo);
-    if(i < 8)
+    if(i < 16)
       i++;
   }
 

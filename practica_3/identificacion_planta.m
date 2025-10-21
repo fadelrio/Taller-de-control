@@ -17,9 +17,11 @@ p_cont2 = 50*log(p2)
 
 P = zpk([],[p1 p2],A(3),1/50);
 %%
-P_cont = zpk([],[p_cont1 p_cont2],28);
+close all;
+ganancia = A(3)*p_cont1*p_cont2/((1-p1)*(1-p2));
+P_cont = zpk([],[p_cont1 p_cont2],ganancia);
 
-t = 1/50*(0:1274-1);
+t = 1/50*(0:2182-1);
 figure;
 plot(t, out.Y);
 hold on;
