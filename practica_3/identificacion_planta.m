@@ -23,9 +23,10 @@ P_cont = zpk([],[p_cont1 p_cont2],ganancia);
 
 t = 1/50*(0:2182-1);
 figure;
-plot(t, out.Y);
-hold on;
 lsim(P_cont,out.U,t);
+hold on;
+plot(t, out.Y);
+legend("Simulado", "Real")
 
 
 
