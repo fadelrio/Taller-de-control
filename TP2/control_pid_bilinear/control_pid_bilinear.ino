@@ -19,6 +19,10 @@
 #define OFFSET_CARRITO 14.5
 //segundo controlador, con bilinear//primer controlador, con backward//primer controlador, con bilinear
 
+#define KP 1.5
+#define KI 0
+#define KD 0.0015
+
 
 float titag = 0;
 float titaa = 0;
@@ -27,12 +31,24 @@ float tita = 0;
 
 float ang_servo = 0;
 
+float ang_servo_ant = ang_servo;
 
-int grados[] = {-25};
-int i = 0;
+float escalon = 0;
+
+bool primera = true;
+
+float referencia = 0;
+
+float error = 0;
+
+float error_ant = error;
+
+float i_k = 0;
+
+float d_k = 0;
 
 
-int iteraciones_2seg = 0;
+int iteraciones_10seg = 0;
 
 int calibration_steps_gyro = CALIBRATION_STEPS_GYRO;
 int calibration_steps_tita = CALIBRATION_STEPS_TITA;
@@ -150,24 +166,34 @@ void loop() {
   //END DATA SONAR
 
   //BEGIN CONTROL
-  if(iteraciones_2seg == 50){
-    ang_servo = grados[i];
-    writeAnguloServo(servo, ang_servo);
-    if(i < 0)
-      i++;
-  }
+  error = referencia + distancia;
+  
+  i_k = i_k + (PERIODO_MS/(1000.0*2))*(error + error_ant);
 
-  mandar_al_simulink((tita*180/PI), ang_servo, distancia);
+  d_k = 2*(error - error_ant)*1000.0/PERIODO_MS - d_k;
+
+  ang_servo = +KP*error + KI*i_k + KD*d_k;
+
+  error_ant = error;
+
+  writeAnguloServo(servo, ang_servo);
+
+  mandar_al_simulink((tita*180/PI), ang_servo, distancia, referencia);
   
   //END CONTROL
 
   //BEGIN ITER
 
-  if(iteraciones_2seg < 50){
-    iteraciones_2seg++;
+  if(iteraciones_10seg < 500){
+    iteraciones_10seg++;
+  }else if (iteraciones_10seg == 500 && primera){
+    referencia = escalon;
+    primera = false;
   }else{
-    iteraciones_2seg = 0;
+    iteraciones_10seg = 0;
+    referencia = referencia*(-1);
   }
+
   //END ITER
   
   //BEGIN FREQ BLOCK 2
@@ -186,7 +212,7 @@ void loop() {
   //END FREQ BLOCK 2
 }
 
-void mandar_al_simulink(float titam, float ang_servo, float distancia){
+void mandar_al_simulink(float titam, float ang_servo, float distancia, float referencia){
   Serial.write("coma");
   byte *b = (byte *) &titam;
   Serial.write(b,4);
@@ -194,9 +220,11 @@ void mandar_al_simulink(float titam, float ang_servo, float distancia){
   Serial.write(b,4);
   b = (byte *) &distancia;
   Serial.write(b,4);
+  b = (byte *) &referencia;
+  Serial.write(b,4);
 }
 
 void writeAnguloServo(Servo servo, float angulo){
-  if (-40<angulo<40)
+  if (-30<angulo<30)
     servo.writeMicroseconds(angulo*M_SERVO + B_SERVO);
 }

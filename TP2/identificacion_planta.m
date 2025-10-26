@@ -68,20 +68,20 @@ P_25 = zpk([],[0,p_cont_25], k_c25);
 
 t = 1/50*(1:59-1);
 figure;
-plot(t, Y_25(1:(59-1)));
-hold on;
 Y_1 = lsim(P_25,Tita_25(1:(59-1)),t);
 plot(t,Y_1)
-legend
+hold on;
+plot(t, Y_25(1:(59-1)));
+legend("Simulado","Real")
 
 
 t = 1/50*(1:59-1);
 figure;
-plot(t, Y_m25(1:(59-1)));
-hold on;
 Y_1 = lsim(P_25,Tita_m25(1:(59-1)),t);
 plot(t,Y_1)
-legend
+hold on;
+plot(t, Y_m25(1:(59-1)));
+legend("Simulado","Real")
 
 %bueno somos re capos y funciona con los dos angulos. La tienen adentro
 %juani y fbern
