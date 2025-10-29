@@ -12,23 +12,36 @@
 #define ALFA .8
 #define M_SERVO 11
 #define B_SERVO 1435
-#define P1P2 131.0338
-#define P1MP2 26.9245
+#define P1P2 146.6233
+#define P1MP2 -35.8400
 #define K 57.195
-#define L1  1.3952
-#define L2 23.3172
+#define L11 0.7174
+#define L12 0.0325
+#define L21  -2.8313
+#define L22 1.5589
+#define L31  -0.0277
+#define L32 -0.0007
 
 float titag = 0;
 float titaa = 0;
 float titaf = 0;
 float tita =0;
 
+float omega_m = 0;
+
+float err_tita = 0;
+
+float err_titap = 0;
+
+float tita_gorro_ant = 0;
+float tita_punto_gorro_ant = 0;
 float tita_gorro = 0;
 float tita_punto_gorro = 0;
+float b_gorro = 0;
 
 float ang_servo = 0;
 
-int grados[] = {40,-40,30,-30,20,-20,10,-10,0};
+int grados[] = {20,-20};
 int i = 0;
 
 int iteraciones_2seg = 0;
@@ -114,6 +127,11 @@ void loop() {
 
   titaf = ALFA*titag+(1-ALFA)*titaa;
 
+  
+  //BEGIN BIAS OMEGA
+  omega_m = ((g.gyro.x-offset_gyro_x)*180/3.1416) + 10;
+  //END BIAS OMEGA
+
   //END DATA AQ IMU
 
   //BEGIN CALI TITA
@@ -140,12 +158,13 @@ void loop() {
 
   //END CALI TITA
 
+
   //BEGIN SERVO STEPS
   
   if(iteraciones_2seg == 100){
     ang_servo = grados[i];
     writeAnguloServo(servo, ang_servo);
-    if(i < 8){
+    if(i < 3){
       i++;
     }else{
       i = 0;
@@ -153,11 +172,19 @@ void loop() {
 
   }
 
-  tita_gorro = tita_gorro + tita_punto_gorro*PERIODO + L1*((tita*180/3.1416)-tita_gorro);
+  err_tita = tita*180/3.1416 - tita_gorro;
+  err_titap = omega_m - (tita_punto_gorro + b_gorro);
 
-  tita_punto_gorro = -tita_gorro*P1P2*PERIODO + tita_punto_gorro*(1-P1MP2*PERIODO) + (K*PERIODO)*ang_servo + L2*((tita*180/3.1416)-tita_gorro);
+  tita_gorro_ant = tita_gorro;
+  tita_punto_gorro_ant = tita_punto_gorro;
 
-  mandar_al_simulink((tita*180/3.1416), ang_servo, tita_gorro, tita_punto_gorro, ((g.gyro.x-offset_gyro_x)*180/3.1416));
+  tita_gorro = tita_gorro_ant + tita_punto_gorro_ant*PERIODO + L11*err_tita + L12*err_titap;
+
+  tita_punto_gorro = -tita_gorro_ant*P1P2*PERIODO + tita_punto_gorro_ant*(1-P1MP2*PERIODO) + (K*PERIODO)*ang_servo + L21*err_tita + L22*err_titap;
+
+  b_gorro = b_gorro + L31*err_tita + L32*err_titap;
+
+  mandar_al_simulink((tita*180/3.1416), ang_servo, tita_gorro, tita_punto_gorro, omega_m, b_gorro);
   
   //END SERVO STEPS
 
@@ -187,7 +214,7 @@ void loop() {
   //END FREQ BLOCK 2
 }
 
-void mandar_al_simulink(float titam, float ang_servo, float tita_gorro, float tita_punto_gorro, float gyro_x){
+void mandar_al_simulink(float titam, float ang_servo, float tita_gorro, float tita_punto_gorro, float gyro_x, float b_gorro){
   Serial.write("coma");
   byte *b = (byte *) &titam;
   Serial.write(b,4);
@@ -198,6 +225,8 @@ void mandar_al_simulink(float titam, float ang_servo, float tita_gorro, float ti
   b = (byte *) &tita_punto_gorro;
   Serial.write(b,4);
   b = (byte *) &gyro_x;
+  Serial.write(b,4);
+  b = (byte *) &b_gorro;
   Serial.write(b,4);
 }
 
