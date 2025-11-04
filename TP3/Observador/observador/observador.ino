@@ -18,14 +18,15 @@
 #define PI 3.14159265359
 #define OFFSET_CARRITO 14.5
 //segundo controlador, con bilinear//primer controlador, con backward//primer controlador, con bilinear
-#define L11 1.2247
-#define L12 0.0027
-#define L21 15.8421
-#define L22 -0.4163
-#define L31 0.0002
-#define L32 0.6329
-#define L41 -0.0008
-#define L42 -4.9288
+#define L11 1.3243
+#define L12 -0.0001
+#define L21 15.8964
+#define L22 -0.5027
+#define L31 0
+#define L32 0.8765
+#define L41 0
+#define L42 -5.8917
+#define KP 1.5
 
 
 float titag = 0;
@@ -33,7 +34,11 @@ float titaa = 0;
 float titaf = 0;
 float tita = 0;
 
-float ang_servo = 0;
+float error = 0;
+
+float referencia = 0;
+
+float sen_control = 0;
 
 float x1_h = 0;
 float x1_h_ant = 0;
@@ -52,7 +57,7 @@ float err_1 = 0;
 
 float err_2 = 0;
 
-int grados[] = {-10,20,0};
+int refes[] = {-8,0,8,0};
 int i = 0;
 
 
@@ -95,7 +100,7 @@ void setup() {
 
   //BEGIN SETUP SERVO
   servo.attach(SERVO_PIN);
-  writeAnguloServo(servo, ang_servo);
+  writeAnguloServo(servo, referencia);
   //END SETUP SERVO 
 
 }
@@ -174,13 +179,20 @@ void loop() {
   //END DATA SONAR
 
   //BEGIN ANGLE STEPS
-  if(iteraciones_2seg == 30){
-    ang_servo = grados[i];
-    writeAnguloServo(servo, ang_servo);
-    if(i < 2)
+  if(iteraciones_2seg == 120){
+    referencia = refes[i];
+    if(i < 3)
       i++;
   }
   //END ANGLE STEPS
+
+  //BEGIN CONTROL
+  error = referencia - distancia;
+
+  sen_control = -KP*error;
+  
+  writeAnguloServo(servo, sen_control);
+  //END CONTROL
 
   //BEGIN OBSERVADOR
 
@@ -193,7 +205,7 @@ void loop() {
   x1_h = x1_h_ant + 0.02*x2_h_ant + L11*err_1 + L12*err_2;
   x2_h = 0.906*x2_h_ant - 0.5*x3_h_ant + L21*err_1 + L22*err_2;
   x3_h = x3_h_ant + 0.02*x4_h_ant + L31*err_1 + L32*err_2;
-  x4_h = -5.2414*x3_h_ant + 0.209*x4_h_ant + L41*err_1 + L42*err_2 + 2.2878*ang_servo;
+  x4_h = -5.2414*x3_h_ant + 0.209*x4_h_ant + L41*err_1 + L42*err_2 + 2.2878*sen_control;
 
   x1_h_ant = x1_h;
   x2_h_ant = x2_h;
@@ -210,7 +222,7 @@ void loop() {
 
   //BEGIN ITER
 
-  if(iteraciones_2seg < 30){
+  if(iteraciones_2seg < 120){
     iteraciones_2seg++;
   }else{
     iteraciones_2seg = 0;
@@ -254,6 +266,6 @@ void mandar_al_simulink(float distancia, float x1_h, float tita_barra, float x3_
 }
 
 void writeAnguloServo(Servo servo, float angulo){
-  if (-40<angulo<40)
+  if (-30<angulo<30)
     servo.writeMicroseconds(angulo*M_SERVO + B_SERVO);
 }
