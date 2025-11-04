@@ -1,4 +1,4 @@
-clc; clear all; close all;
+clc; %clear all; close all;
 
 A = [0,1,0,0;
     0,-4.7,-25,0;
