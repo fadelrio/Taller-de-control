@@ -12,7 +12,7 @@ p1 = (A(1)+sqrt(A(1)^2+4*A(2)))/2
 
 p2 = (A(1)-sqrt(A(1)^2+4*A(2)))/2
 
-p_cont1 = 50*log(p1)
+p_cont1 = 50*log(p1)*2
 p_cont2 = 50*log(p2)
 
 P = zpk([],[p1 p2],A(3),1/50);
