@@ -35,3 +35,16 @@ K
 L = place(A_d',C_d',[exp(-T_s*31.1333*2)+2e-4,exp(-T_s*31.1333*1)+3e-4, exp(-T_s*31.1333*5)+4e-4, exp(-T_s*31.1333*5)]);
 
 L = L'
+
+C_df = [1,0,0,0];
+
+A_dext = [A_d,[0;0;0;0];-C_df*T_s, 1];
+
+B_dext = [B_d;0];
+
+C_dext = [C_df,0];
+
+KH = acker(A_dext, -B_dext, [exp(-T_s*10)+2e-4,exp(-T_s*3)+3e-4, exp(-T_s*10)+4e-4, exp(-T_s*8), exp(-T_s*10)])
+
+
+eig(A_dext + B_dext*KH)
