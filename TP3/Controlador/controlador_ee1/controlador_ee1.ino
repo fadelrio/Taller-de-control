@@ -12,6 +12,7 @@
 #define MAX_DELAY_US 16383
 #define CALIBRATION_STEPS_GYRO 100
 #define CALIBRATION_STEPS_TITA 100
+#define OBS_STEPS 30
 #define ALFA .95
 #define M_SERVO 11
 #define B_SERVO 1435
@@ -30,6 +31,8 @@
 #define K2 0.4365
 #define K3 -0.8576
 #define K4 0.0544
+
+int obs_steps = 0;
 
 float titag = 0;
 float titaa = 0;
@@ -187,9 +190,13 @@ void loop() {
   //END ANGLE STEPS
 
   //BEGIN CONTROL
-  sen_control = K1*x1_h + K2*x2_h + K3*x3_h + K4*x4_h;
+  if(obs_steps > OBS_STEPS){
+    sen_control = K1*x1_h + K2*x2_h + K3*x3_h + K4*x4_h;
   
-  writeAnguloServo(servo, sen_control);
+    writeAnguloServo(servo, sen_control);
+  }else {
+    obs_steps++;
+  }
   //END CONTROL
 
   //BEGIN OBSERVADOR

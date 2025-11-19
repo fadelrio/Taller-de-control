@@ -1,6 +1,6 @@
 close all;
 
-largo = 225;
+largo = 600;
 
 diferencia_simumreal = 0;
 
@@ -10,7 +10,7 @@ inicio_simu = 1;
 fin_simu = inicio_simu + largo + diferencia_simumreal;
 
 
-inicio_real = 146;
+inicio_real = 164;
 
 fin_real = inicio_real + largo;
 
@@ -29,7 +29,7 @@ figure;
 plot(t_2, Simulado, 'LineWidth', 1.5)
 hold on;
 plot(t, Real, 'LineWidth', 1.5)
-legend("Simulado","Real")
+legend("Simulado", "Observado")
 grid
 hold on;
 

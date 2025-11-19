@@ -26,11 +26,11 @@
 #define L32 0.8765
 #define L41 0
 #define L42 -5.8917
-#define K1 4.5114
-#define K2 0.7020
-#define K3 -1.433
-#define K4 0.0595
-#define H -5.5570
+#define K1 1.2537
+#define K2 0.2174
+#define K3 0.6684
+#define K4 0.1467
+#define H -1.0873
 
 float titag = 0;
 float titaa = 0;
@@ -62,7 +62,7 @@ float err_1 = 0;
 
 float err_2 = 0;
 
-int refes[] = {10};
+int refes[] = {10, 0, -10, 0};
 int i = 0;
 
 
@@ -186,12 +186,12 @@ void loop() {
   //BEGIN ANGLE STEPS
   if(iteraciones_2seg == 150){
     referencia = refes[i];
-    if(i < 0)
+    if(i < 3)
       i++;
   }
   //END ANGLE STEPS
 
-  error = referencia - distancia; 
+  error = referencia - x1_h; 
 
   error_acum += 0.02*error;
 

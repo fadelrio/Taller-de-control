@@ -30,7 +30,8 @@
 #define K2 0.4365
 #define K3 -0.8576
 #define K4 0.0544
-#define F -2.0544
+#define F1 -2.0544
+#define F2 0
 
 float titag = 0;
 float titaa = 0;
@@ -38,6 +39,8 @@ float titaf = 0;
 float tita = 0;
 
 float referencia = 0;
+
+float referencia_tita = 0;
 
 float sen_control = 0;
 
@@ -58,7 +61,9 @@ float err_1 = 0;
 
 float err_2 = 0;
 
-int refes[] = {10};
+float error_tita = 0;
+
+int refes[] = {10,0,-10,0};
 int i = 0;
 
 
@@ -182,13 +187,13 @@ void loop() {
   //BEGIN ANGLE STEPS
   if(iteraciones_2seg == 150){
     referencia = refes[i];
-    if(i < 0)
+    if(i < 3)
       i++;
   }
   //END ANGLE STEPS
 
   //BEGIN CONTROL
-  sen_control = K1*x1_h + K2*x2_h + K3*x3_h + K4*x4_h + referencia*F; 
+  sen_control = K1*x1_h + K2*x2_h + K3*x3_h + K4*x4_h + referencia*F1 + referencia_tita*F2; 
   
   writeAnguloServo(servo, sen_control);
   //END CONTROL

@@ -36,7 +36,5 @@ L = place(A_d',C_d',[exp(-T_s*31.1333*2)+2e-4,exp(-T_s*31.1333*1)+3e-4, exp(-T_s
 
 L = L'
 
-C_df = [1,0,0,0];
-
-F = inv(C_df*inv(eye(4)-(A_d+B_d*K))*B_d)
+F = pinv(C_d*inv(eye(4)-(A_d+B_d*K))*B_d)
 

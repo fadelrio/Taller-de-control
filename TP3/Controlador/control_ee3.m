@@ -1,4 +1,4 @@
-clc; %clear all; close all;
+%clc; %clear all; close all;
 
 A = [0,1,0,0;
     0,-4.7,-25,0;
@@ -44,7 +44,7 @@ B_dext = [B_d;0];
 
 C_dext = [C_df,0];
 
-KH = acker(A_dext, -B_dext, [exp(-T_s*10)+2e-4,exp(-T_s*3)+3e-4, exp(-T_s*10)+4e-4, exp(-T_s*8), exp(-T_s*10)])
+KH = acker(A_dext, -B_dext, [exp(-T_s*10/1.3)+2e-4,exp(-T_s*3/1.5)+3e-4, exp(-T_s*10/1.3)+4e-4, exp(-T_s*8/1.5), exp(-T_s*10/1.5)])
 
 
 eig(A_dext + B_dext*KH)
