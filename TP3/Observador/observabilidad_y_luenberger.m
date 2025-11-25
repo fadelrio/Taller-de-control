@@ -26,7 +26,7 @@ Cont = [B, A*B, A*A*B, A*A*A*B];
 rank(O)
 rank(Cont)
 
-%Este es observable
+%Este es observable y controlable
 
 C = [1,0,0,0];
 
@@ -40,7 +40,7 @@ Cont = [B, A*B, A*A*B, A*A*A*B];
 rank(O)
 rank(Cont)
 
-%Este también es observable
+%Este también es observable y controlable
 
 C = [0,0,1,0];
 
@@ -54,7 +54,7 @@ Cont = [B, A*B, A*A*B, A*A*A*B];
 rank(O)
 rank(Cont)
 
-%Este ya no es observable
+%Este ya no es observable pero si controlable 
 
 %%
 
