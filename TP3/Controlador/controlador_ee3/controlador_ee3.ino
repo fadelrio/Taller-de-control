@@ -184,7 +184,7 @@ void loop() {
   //END DATA SONAR
 
   //BEGIN ANGLE STEPS
-  if(iteraciones_2seg == 150){
+  if(iteraciones_2seg == 300){
     referencia = refes[i];
     if(i < 3)
       i++;
@@ -229,7 +229,7 @@ void loop() {
 
   //BEGIN ITER
 
-  if(iteraciones_2seg < 150){
+  if(iteraciones_2seg < 300){
     iteraciones_2seg++;
   }else{
     iteraciones_2seg = 0;

@@ -1,6 +1,6 @@
 close all;
 
-largo = 600;
+largo = 1200;
 
 diferencia_simumreal = 0;
 
@@ -10,12 +10,11 @@ inicio_simu = 1;
 fin_simu = inicio_simu + largo + diferencia_simumreal;
 
 
-inicio_real = 164;
+inicio_real = 319;
 
 fin_real = inicio_real + largo;
 
 T_s = 1/50;
-
 
 t = T_s*(1:(largo+1));
 
